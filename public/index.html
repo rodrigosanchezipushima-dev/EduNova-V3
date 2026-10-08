@@ -3,193 +3,255 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111827">
-<meta name="description" content="EduNova V3: organiza tareas, horarios, notas y calendario con un asistente de IA.">
+<meta name="theme-color" content="#0f172a">
+<meta name="description" content="EduNova V4 - centro educativo personal">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
-<title>EduNova V3</title>
+<title>EduNova V4</title>
 <style>
-:root{--bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#6b7280;--line:#e5e7eb;--accent:#4f46e5;--accent2:#7c3aed;--ok:#16a34a;--danger:#dc2626;--shadow:0 10px 30px rgba(20,30,60,.08)}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
-button,input,select,textarea{font:inherit}button{cursor:pointer;border:0}.app{display:flex;min-height:100vh}
-.sidebar{width:245px;background:#111827;color:#fff;padding:18px 14px;position:fixed;inset:0 auto 0 0;z-index:20}
-.brand{font-size:22px;font-weight:800;padding:8px 10px 20px}.brand small{display:block;font-size:11px;color:#9ca3af;font-weight:500;margin-top:3px}
-.nav button{width:100%;background:transparent;color:#d1d5db;text-align:left;padding:12px 12px;border-radius:11px;margin:2px 0}.nav button:hover,.nav button.active{background:#1f2937;color:#fff}
-.main{margin-left:245px;width:calc(100% - 245px);padding:24px;max-width:1500px}.top{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:20px}
-h1,h2,h3{margin:0 0 8px}.muted{color:var(--muted)}.pill{display:inline-flex;padding:5px 9px;border-radius:999px;background:#eef2ff;color:#4338ca;font-size:12px;font-weight:700}
-.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}.span-12{grid-column:span 12}.span-8{grid-column:span 8}.span-6{grid-column:span 6}.span-4{grid-column:span 4}.span-3{grid-column:span 3}
-.stat{font-size:28px;font-weight:800}.stat-label{font-size:13px;color:var(--muted)}.list{display:grid;gap:10px}.item{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.actions{display:flex;gap:7px;flex-wrap:wrap}
-.btn{padding:9px 12px;border-radius:10px;background:#e5e7eb;color:#111827;font-weight:700}.btn.primary{background:var(--accent);color:#fff}.btn.danger{background:#fee2e2;color:#991b1b}.btn.ghost{background:transparent;border:1px solid var(--line)}
-.form{display:grid;gap:10px}.form.grid2{grid-template-columns:1fr 1fr}.field{display:grid;gap:5px}.field label{font-size:12px;font-weight:700;color:#4b5563}.field input,.field select,.field textarea{width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--text)}textarea{min-height:90px;resize:vertical}
+:root{
+  --bg:#f6f8fc;--surface:#fff;--surface-2:#f8fafc;--text:#172033;--muted:#64748b;
+  --line:#e2e8f0;--primary:#4f46e5;--primary-2:#6366f1;--nav:#0f172a;
+  --nav-text:#cbd5e1;--ok:#16a34a;--danger:#dc2626;--shadow:0 12px 35px rgba(15,23,42,.07);
+  --radius:20px;
+}
+[data-theme="dark"]{
+  --bg:#0b1120;--surface:#111827;--surface-2:#172033;--text:#f1f5f9;--muted:#94a3b8;
+  --line:#263247;--nav:#070d18;--nav-text:#cbd5e1;--shadow:0 12px 35px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid rgba(99,102,241,.25);outline-offset:2px}
+.app{min-height:100vh}
+.sidebar{position:fixed;inset:0 auto 0 0;width:255px;background:var(--nav);color:#fff;padding:20px 14px;z-index:30;display:flex;flex-direction:column}
+.brand{display:flex;align-items:center;gap:11px;padding:4px 10px 24px}
+.brand-logo{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:grid;place-items:center;font-weight:900;font-size:18px}
+.brand-name{font-weight:850;font-size:20px;letter-spacing:-.4px}.brand small{display:block;color:#94a3b8;font-size:11px;font-weight:500;margin-top:2px}
+.nav{display:grid;gap:4px}.nav button{border:0;background:transparent;color:var(--nav-text);text-align:left;padding:11px 12px;border-radius:12px;font-weight:650;transition:.18s}
+.nav button:hover{background:#1e293b;color:#fff;transform:translateX(2px)}.nav button.active{background:#312e81;color:#fff}
+.nav-icon{display:inline-grid;width:24px;place-items:center;margin-right:5px}
+.sidebar-footer{margin-top:auto;padding:10px}.user-mini{border:1px solid #263247;border-radius:15px;padding:10px;display:flex;gap:10px;align-items:center}
+.avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#3730a3;font-weight:800}.user-mini b{font-size:13px}.user-mini small{display:block;color:#94a3b8}
+.main{margin-left:255px;min-height:100vh;padding:25px;max-width:1600px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}
+.eyebrow{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+h1,h2,h3{margin:0}.topbar h1{font-size:28px;letter-spacing:-.8px;margin-top:3px}.top-actions{display:flex;gap:8px;align-items:center}
+.icon-btn,.btn{border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:12px;padding:9px 12px;font-weight:700;transition:.18s}
+.icon-btn{width:42px;height:42px;padding:0}.icon-btn:hover,.btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(15,23,42,.08)}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}.btn.ghost{background:transparent}.btn.danger{background:#fee2e2;color:#991b1b;border-color:#fecaca}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}.span-12{grid-column:span 12}.span-8{grid-column:span 8}.span-6{grid-column:span 6}.span-4{grid-column:span 4}.span-3{grid-column:span 3}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.hero{background:linear-gradient(135deg,#312e81,#4f46e5 55%,#6366f1);color:#fff;border:0;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;right:-70px;top:-100px;background:rgba(255,255,255,.1)}
+.hero h2{font-size:25px;letter-spacing:-.5px}.hero p{color:#e0e7ff;max-width:650px;margin:8px 0 18px}
+.stat-card{display:flex;align-items:center;gap:13px}.stat-icon{width:46px;height:46px;border-radius:14px;background:var(--surface-2);display:grid;place-items:center;font-size:20px}.stat-value{font-size:26px;font-weight:850}.stat-label{font-size:12px;color:var(--muted);margin-top:2px}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}.section-head h2{font-size:17px}
+.list{display:grid;gap:9px}.item{border:1px solid var(--line);background:var(--surface-2);border-radius:14px;padding:12px}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.actions{display:flex;gap:7px;flex-wrap:wrap}
+.muted{color:var(--muted)}.pill{display:inline-flex;padding:5px 9px;border-radius:999px;background:#eef2ff;color:#4338ca;font-size:11px;font-weight:800}
+.subject-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:11px}.subject{border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:15px;text-align:left;color:var(--text);transition:.2s;min-height:105px}
+.subject:hover{border-color:#818cf8;transform:translateY(-3px);box-shadow:0 10px 25px rgba(79,70,229,.1)}.subject .sicon{font-size:24px}.subject b{display:block;margin-top:8px;font-size:13px}.subject small{color:var(--muted);font-size:11px}
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.quick{border:1px dashed var(--line);background:var(--surface-2);border-radius:14px;padding:13px;text-align:left;color:var(--text);font-weight:700}.quick:hover{border-color:#818cf8}
+.form{display:grid;gap:10px}.form.grid2{grid-template-columns:1fr 1fr}.field{display:grid;gap:5px}.field label{font-size:12px;font-weight:750;color:var(--muted)}.field input,.field select,.field textarea{width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:11px;background:var(--surface);color:var(--text)}textarea{min-height:90px;resize:vertical}
 .task.done{opacity:.55}.task.done .task-title{text-decoration:line-through}.priority-high{border-left:4px solid #ef4444}.priority-med{border-left:4px solid #f59e0b}.priority-low{border-left:4px solid #22c55e}
-.schedule{display:grid;grid-template-columns:90px repeat(6,1fr);overflow:auto}.schedule div{border:1px solid var(--line);padding:9px;min-width:115px;font-size:12px}.schedule .head{font-weight:800;background:#f8fafc}.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.day{min-height:100px;border:1px solid var(--line);border-radius:10px;padding:7px;background:#fff}.day strong{font-size:12px}.event{font-size:10px;background:#eef2ff;color:#3730a3;padding:4px;border-radius:5px;margin-top:4px}
-.chat{display:flex;flex-direction:column;height:68vh}.messages{flex:1;overflow:auto;display:grid;gap:10px;padding:5px}.msg{max-width:85%;padding:11px 13px;border-radius:14px;white-space:pre-wrap;line-height:1.45}.msg.user{margin-left:auto;background:#4f46e5;color:#fff}.msg.ai{background:#f3f4f6}.chatbar{display:flex;gap:8px;border-top:1px solid var(--line);padding-top:12px}.chatbar input{flex:1;padding:12px;border:1px solid var(--line);border-radius:12px}
-.toast{position:fixed;right:20px;bottom:20px;background:#111827;color:#fff;padding:12px 15px;border-radius:12px;box-shadow:var(--shadow);z-index:50}
-.mobile-nav{display:none}.empty{padding:25px;text-align:center;color:var(--muted)}.danger-text{color:var(--danger)}.ok{color:var(--ok)}
-@media(max-width:850px){.sidebar{display:none}.main{margin-left:0;width:100%;padding:15px;padding-bottom:82px}.grid{grid-template-columns:1fr}.span-12,.span-8,.span-6,.span-4,.span-3{grid-column:span 1}.top{align-items:flex-start}.mobile-nav{display:flex;position:fixed;bottom:0;left:0;right:0;height:64px;background:#111827;z-index:30;justify-content:space-around;padding:6px}.mobile-nav button{background:transparent;color:#d1d5db;font-size:10px}.mobile-nav button.active{color:#fff}.form.grid2{grid-template-columns:1fr}.calendar{gap:3px}.day{min-height:75px;padding:4px}.schedule{grid-template-columns:65px repeat(6,100px)}}
+.schedule{display:grid;grid-template-columns:80px repeat(6,1fr);overflow:auto}.schedule div{border:1px solid var(--line);padding:9px;min-width:110px;font-size:12px}.schedule .head{font-weight:800;background:var(--surface-2)}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.day{min-height:100px;border:1px solid var(--line);border-radius:10px;padding:7px;background:var(--surface)}.day strong{font-size:12px}.event{font-size:10px;background:#eef2ff;color:#3730a3;padding:4px;border-radius:5px;margin-top:4px}
+.chat{display:flex;flex-direction:column;height:68vh}.messages{flex:1;overflow:auto;display:grid;align-content:start;gap:10px;padding:5px}.msg{max-width:85%;padding:11px 13px;border-radius:14px;white-space:pre-wrap;line-height:1.45}.msg.user{margin-left:auto;background:#4f46e5;color:#fff}.msg.ai{background:var(--surface-2)}.chatbar{display:flex;gap:8px;border-top:1px solid var(--line);padding-top:12px}.chatbar input{flex:1;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--text)}
+.toast{position:fixed;right:20px;bottom:20px;background:#0f172a;color:#fff;padding:12px 15px;border-radius:12px;box-shadow:var(--shadow);z-index:60}
+.mobile-nav{display:none}.empty{padding:25px;text-align:center;color:var(--muted)}
+@media(max-width:1100px){.subject-grid{grid-template-columns:repeat(3,1fr)}.quick-grid{grid-template-columns:repeat(2,1fr)}.span-8,.span-6,.span-4{grid-column:span 12}}
+@media(max-width:850px){.sidebar{display:none}.main{margin-left:0;padding:16px;padding-bottom:82px}.grid{grid-template-columns:1fr}.span-12,.span-8,.span-6,.span-4,.span-3{grid-column:span 1}.subject-grid{grid-template-columns:repeat(2,1fr)}.topbar h1{font-size:23px}.mobile-nav{display:flex;position:fixed;bottom:0;left:0;right:0;height:66px;background:var(--nav);z-index:50;justify-content:space-around;padding:6px}.mobile-nav button{border:0;background:transparent;color:#94a3b8;font-size:10px}.mobile-nav button.active{color:#fff}.form.grid2{grid-template-columns:1fr}.calendar{gap:3px}.day{min-height:75px;padding:4px}}
 </style>
 </head>
 <body>
 <div class="app">
 <aside class="sidebar">
-  <div class="brand">EduNova <small>V3 · organización escolar</small></div>
+  <div class="brand">
+    <div class="brand-logo">E</div>
+    <div><div class="brand-name">EduNova</div><small>Centro educativo personal</small></div>
+  </div>
   <nav class="nav" id="nav"></nav>
+  <div class="sidebar-footer">
+    <div class="user-mini"><div class="avatar" id="sideAvatar">E</div><div><b id="sideName">Estudiante</b><small>Mi espacio</small></div></div>
+  </div>
 </aside>
+
 <main class="main">
-  <div class="top"><div><h1 id="pageTitle">Inicio</h1><div class="muted" id="greeting"></div></div><span class="pill" id="aiStatus">IA local</span></div>
+  <header class="topbar">
+    <div><div class="eyebrow">EduNova V4</div><h1 id="pageTitle">Inicio</h1></div>
+    <div class="top-actions">
+      <button class="icon-btn" title="Cambiar tema" onclick="toggleTheme()" id="themeBtn">☀️</button>
+      <button class="btn primary" onclick="go('tasks')">＋ Nueva tarea</button>
+    </div>
+  </header>
   <section id="view"></section>
 </main>
 </div>
 <div class="mobile-nav" id="mobileNav"></div>
 <div id="toast" class="toast" hidden></div>
+
 <script>
 const KEY="edunova_v3_data";
+const THEME_KEY="edunova_theme";
+const subjects=[
+ ["Comunicación","💬"],["DPCC","🤝"],["Religión","✝️"],["Matemáticas","∑"],["CC.SS","🌎"],
+ ["Inglés","🔤"],["Arte","🎨"],["Educación Física","🏃"],["CyT","🔬"],["EPT","💡"]
+];
 const defaultData={
  profile:{name:"Estudiante",initial:"E"},
  planner:{maxHours:2,minSession:25},
  tasks:[
-  {id:1,title:"Trabajo de Ciencias",subject:"Ciencia y Tecnología",due:"2026-10-12",priority:"alta",minutes:60,desc:"Terminar investigación y conclusiones.",done:false},
+  {id:1,title:"Trabajo de Ciencias",subject:"CyT",due:"2026-10-12",priority:"alta",minutes:60,desc:"Terminar investigación y conclusiones.",done:false},
   {id:2,title:"Leer capítulo",subject:"Comunicación",due:"2026-10-10",priority:"media",minutes:35,desc:"Leer y preparar ideas principales.",done:false}
  ],
- grades:[{id:1,subject:"Matemática",grade:16},{id:2,subject:"Comunicación",grade:18}],
+ grades:[{id:1,subject:"Matemáticas",grade:16},{id:2,subject:"Comunicación",grade:18}],
  announcements:["Revisar los comunicados del aula.","Recuerda entregar los trabajos antes de la fecha indicada."],
  schedule:[
-  {day:"Lunes",time:"08:00",course:"Matemática"},{day:"Lunes",time:"09:00",course:"Comunicación"},
-  {day:"Martes",time:"08:00",course:"Ciencia y Tecnología"},{day:"Miércoles",time:"10:00",course:"Educación Física"},
-  {day:"Jueves",time:"09:00",course:"Inglés"},{day:"Viernes",time:"08:00",course:"Ciencias Sociales"}
+  {day:"Lunes",time:"08:00",course:"Matemáticas"},{day:"Lunes",time:"09:00",course:"Comunicación"},
+  {day:"Martes",time:"08:00",course:"CyT"},{day:"Miércoles",time:"10:00",course:"Educación Física"},
+  {day:"Jueves",time:"09:00",course:"Inglés"},{day:"Viernes",time:"08:00",course:"CC.SS"}
  ]};
 let data=JSON.parse(localStorage.getItem(KEY)||"null")||defaultData;
 let current="home";
+
 const views=[
- ["home","Inicio","⌂"],["tasks","Tareas","✓"],["schedule","Horario","▦"],["grades","Notas","★"],
- ["calendar","Calendario","□"],["announcements","Comunicados","!"],["assistant","Asistente IA","✦"],["settings","Configuración","⚙"]
+ ["home","Inicio","⌂"],["subjects","Materias","▦"],["tasks","Tareas","✓"],
+ ["schedule","Horario","◫"],["grades","Notas","★"],["calendar","Agenda","□"],
+ ["assistant","Asistente IA","✦"],["settings","Configuración","⚙"]
 ];
-function save(){localStorage.setItem(KEY,JSON.stringify(data));}
-function esc(s=""){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-function toast(t){const x=document.getElementById("toast");x.textContent=t;x.hidden=false;setTimeout(()=>x.hidden=true,2200);}
+
+function save(){localStorage.setItem(KEY,JSON.stringify(data))}
+function esc(s=""){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function toast(t){const x=document.getElementById("toast");x.textContent=t;x.hidden=false;setTimeout(()=>x.hidden=true,2200)}
+function go(v){current=v;nav();render()}
 function nav(){
- const html=views.map(v=>`<button class="${current===v[0]?'active':''}" onclick="go('${v[0]}')">${v[2]} &nbsp; ${v[1]}</button>`).join("");
+ const html=views.map(v=>`<button class="${current===v[0]?'active':''}" onclick="go('${v[0]}')"><span class="nav-icon">${v[2]}</span>${v[1]}</button>`).join("");
  document.getElementById("nav").innerHTML=html;
  document.getElementById("mobileNav").innerHTML=views.slice(0,5).map(v=>`<button class="${current===v[0]?'active':''}" onclick="go('${v[0]}')">${v[2]}<br>${v[1]}</button>`).join("");
 }
-function go(v){current=v;nav();render();}
 function render(){
- const v=views.find(x=>x[0]===current);document.getElementById("pageTitle").textContent=v[1];
- document.getElementById("greeting").textContent=`Hola, ${data.profile.name}. Todo queda guardado en este dispositivo.`;
- const f={home:home,tasks:tasks,schedule:schedule,grades:grades,calendar:calendar,announcements:announcements,assistant:assistant,settings:settings}[current];
- document.getElementById("view").innerHTML=f(); if(current==="assistant") bindChat();
+ const v=views.find(x=>x[0]===current);
+ document.getElementById("pageTitle").textContent=v[1];
+ document.getElementById("sideName").textContent=data.profile.name;
+ document.getElementById("sideAvatar").textContent=(data.profile.initial||"E").slice(0,2).toUpperCase();
+ const f={home,subjects,tasks,schedule,grades,calendar,assistant,settings}[current];
+ document.getElementById("view").innerHTML=f();
+ if(current==="assistant")bindChat();
 }
 function home(){
- const pending=data.tasks.filter(x=>!x.done), avg=data.grades.length?(data.grades.reduce((a,b)=>a+Number(b.grade),0)/data.grades.length).toFixed(1):"—";
- const urgent=[...pending].sort((a,b)=>a.due.localeCompare(b.due)).slice(0,4);
+ const pending=data.tasks.filter(x=>!x.done);
+ const avg=data.grades.length?(data.grades.reduce((a,b)=>a+Number(b.grade),0)/data.grades.length).toFixed(1):"—";
+ const urgent=[...pending].sort((a,b)=>a.due.localeCompare(b.due)).slice(0,3);
  return `<div class="grid">
- <div class="card span-3"><div class="stat">${pending.length}</div><div class="stat-label">Tareas pendientes</div></div>
- <div class="card span-3"><div class="stat">${avg}</div><div class="stat-label">Promedio</div></div>
- <div class="card span-3"><div class="stat">${data.schedule.length}</div><div class="stat-label">Clases registradas</div></div>
- <div class="card span-3"><div class="stat">${data.announcements.length}</div><div class="stat-label">Comunicados</div></div>
- <div class="card span-8"><div class="row"><h2>Próximas tareas</h2><button class="btn primary" onclick="go('tasks')">Ver todas</button></div>
- <div class="list" style="margin-top:12px">${urgent.length?urgent.map(taskCard).join(""):'<div class="empty">No tienes tareas pendientes 🎉</div>'}</div></div>
- <div class="card span-4"><h2>Plan de hoy</h2><p class="muted">Genera un plan automático según fechas, prioridades y tiempo disponible.</p><button class="btn primary" onclick="makePlan(true)">Crear mi plan</button><div id="planBox"></div></div>
+  <div class="card hero span-12">
+   <div class="eyebrow" style="color:#c7d2fe">Tu espacio de estudio</div>
+   <h2>Hola, ${esc(data.profile.name)} 👋</h2>
+   <p>Organiza tus materias, tareas y tiempo de estudio desde un solo lugar.</p>
+   <button class="btn" onclick="go('subjects')">Ver mis materias →</button>
+  </div>
+  <div class="card stat-card span-3"><div class="stat-icon">🔥</div><div><div class="stat-value">0</div><div class="stat-label">Días de racha</div></div></div>
+  <div class="card stat-card span-3"><div class="stat-icon">⭐</div><div><div class="stat-value">0 XP</div><div class="stat-label">Nivel inicial</div></div></div>
+  <div class="card stat-card span-3"><div class="stat-icon">📝</div><div><div class="stat-value">${pending.length}</div><div class="stat-label">Tareas pendientes</div></div></div>
+  <div class="card stat-card span-3"><div class="stat-icon">📈</div><div><div class="stat-value">${avg}</div><div class="stat-label">Promedio actual</div></div></div>
+
+  <div class="card span-8">
+   <div class="section-head"><h2>⚡ Acciones rápidas</h2></div>
+   <div class="quick-grid">
+    <button class="quick" onclick="go('tasks')">➕<br>Nueva tarea</button>
+    <button class="quick" onclick="go('subjects')">📖<br>Mis materias</button>
+    <button class="quick" onclick="go('assistant')">🤖<br>Preguntar a IA</button>
+    <button class="quick" onclick="go('calendar')">📅<br>Ver agenda</button>
+   </div>
+  </div>
+
+  <div class="card span-4">
+   <div class="section-head"><h2>📌 Próximo paso</h2></div>
+   ${urgent.length?`<div class="item"><b>${esc(urgent[0].title)}</b><div class="muted" style="margin-top:5px">${esc(urgent[0].subject)} · Entrega ${urgent[0].due}</div><button class="btn primary" style="margin-top:10px" onclick="go('tasks')">Ver tarea</button></div>`:'<div class="empty">No tienes tareas pendientes 🎉</div>'}
+  </div>
+
+  <div class="card span-12">
+   <div class="section-head"><h2>📚 Mis materias</h2><button class="btn ghost" onclick="go('subjects')">Ver todas</button></div>
+   <div class="subject-grid">${subjects.map(([n,i])=>`<button class="subject" onclick="subjectInfo('${n}')"><span class="sicon">${i}</span><b>${n}</b><small>Ver espacio</small></button>`).join("")}</div>
+  </div>
  </div>`;
+}
+function subjects(){
+ return `<div class="card"><div class="section-head"><div><h2>Mis materias</h2><div class="muted">Selecciona una materia para continuar.</div></div></div><div class="subject-grid">${subjects.map(([n,i])=>`<button class="subject" onclick="subjectInfo('${n}')"><span class="sicon">${i}</span><b>${n}</b><small>Tareas · Apuntes · Temas</small></button>`).join("")}</div></div>`;
+}
+function subjectInfo(name){
+ toast(`${name}: espacio de materia preparado para la Fase 2`);
 }
 function taskCard(t){
  return `<div class="item task ${t.done?'done':''} priority-${t.priority==='alta'?'high':t.priority==='media'?'med':'low'}">
- <div class="row"><div><b class="task-title">${esc(t.title)}</b><div class="muted">${esc(t.subject)} · ${t.due} · ${t.minutes} min</div></div>
- <div class="actions"><button class="btn" onclick="toggleTask(${t.id})">${t.done?'Reabrir':'Completar'}</button><button class="btn danger" onclick="delTask(${t.id})">Borrar</button></div></div>
- ${t.desc?`<div class="muted" style="margin-top:6px">${esc(t.desc)}</div>`:""}</div>`;
+  <div class="row"><div><b class="task-title">${esc(t.title)}</b><div class="muted">${esc(t.subject)} · ${t.due} · ${t.minutes} min</div></div>
+  <div class="actions"><button class="btn" onclick="toggleTask(${t.id})">${t.done?'Reabrir':'Completar'}</button><button class="btn danger" onclick="delTask(${t.id})">Borrar</button></div></div>
+  ${t.desc?`<div class="muted" style="margin-top:6px">${esc(t.desc)}</div>`:""}</div>`;
 }
 function tasks(){
- return `<div class="grid"><div class="card span-4"><h2>Nueva tarea</h2><form class="form" onsubmit="addTask(event)">
- <div class="field"><label>Tarea</label><input name="title" required placeholder="Ej. Exposición de historia"></div>
- <div class="field"><label>Curso</label><input name="subject" required placeholder="Ej. Ciencias Sociales"></div>
- <div class="form grid2"><div class="field"><label>Entrega</label><input type="date" name="due" required></div><div class="field"><label>Minutos</label><input type="number" name="minutes" min="5" value="30"></div></div>
- <div class="field"><label>Prioridad</label><select name="priority"><option value="alta">Alta</option><option value="media" selected>Media</option><option value="baja">Baja</option></select></div>
- <div class="field"><label>Descripción</label><textarea name="desc" placeholder="Qué necesitas hacer..."></textarea></div>
- <button class="btn primary">Agregar tarea</button></form></div>
- <div class="card span-8"><div class="row"><h2>Mis tareas</h2><button class="btn primary" onclick="makePlan(false)">Organizar automáticamente</button></div>
- <div class="list" style="margin-top:12px">${data.tasks.length?[...data.tasks].sort((a,b)=>a.done-b.done||a.due.localeCompare(b.due)).map(taskCard).join(""):'<div class="empty">Aún no tienes tareas.</div>'}</div></div></div>`;
+ return `<div class="grid"><div class="card span-4"><div class="section-head"><h2>Nueva tarea</h2></div><form class="form" onsubmit="addTask(event)">
+  <div class="field"><label>Tarea</label><input name="title" required placeholder="Ej. Exposición de historia"></div>
+  <div class="field"><label>Curso</label><input name="subject" required placeholder="Ej. CC.SS"></div>
+  <div class="form grid2"><div class="field"><label>Entrega</label><input type="date" name="due" required></div><div class="field"><label>Minutos</label><input type="number" name="minutes" min="5" value="30"></div></div>
+  <div class="field"><label>Prioridad</label><select name="priority"><option value="alta">Alta</option><option value="media" selected>Media</option><option value="baja">Baja</option></select></div>
+  <div class="field"><label>Descripción</label><textarea name="desc" placeholder="Qué necesitas hacer..."></textarea></div>
+  <button class="btn primary">Agregar tarea</button></form></div>
+  <div class="card span-8"><div class="section-head"><h2>Mis tareas</h2><button class="btn primary" onclick="makePlan(false)">Organizar automáticamente</button></div>
+  <div class="list">${data.tasks.length?[...data.tasks].sort((a,b)=>a.done-b.done||a.due.localeCompare(b.due)).map(taskCard).join(""):'<div class="empty">Aún no tienes tareas.</div>'}</div></div></div>`;
 }
-function addTask(e){e.preventDefault();const f=new FormData(e.target);data.tasks.push({id:Date.now(),title:f.get("title"),subject:f.get("subject"),due:f.get("due"),priority:f.get("priority"),minutes:Number(f.get("minutes"))||30,desc:f.get("desc"),done:false});save();toast("Tarea agregada");render();}
-function toggleTask(id){const t=data.tasks.find(x=>x.id===id);if(t)t.done=!t.done;save();render();}
-function delTask(id){data.tasks=data.tasks.filter(x=>x.id!==id);save();render();}
-function makePlan(show){
- let hours=Number(data.planner.maxHours)||2, cap=hours*60, used=0;
- const pending=[...data.tasks].filter(x=>!x.done).sort((a,b)=>a.due.localeCompare(b.due)||(a.priority==="alta"?0:1)-(b.priority==="alta"?0:1));
- const blocks=[];for(const t of pending){if(used>=cap)break;const m=Math.min(Number(t.minutes)||25,cap-used);blocks.push(`• ${t.title} — ${m} min (${t.priority})`);used+=m;}
- const html=blocks.length?`<div class="item" style="margin-top:12px"><b>Plan sugerido</b><div style="margin-top:8px;white-space:pre-line">${blocks.join("\n")}</div><small class="muted">Tiempo usado: ${used}/${cap} min</small></div>`:`<div class="empty">No hay tareas para planificar.</div>`;
- if(show){const box=document.getElementById("planBox");if(box)box.innerHTML=html;else toast("Ve a Tareas para ver el plan.");}else{toast("Plan organizado según tus prioridades.");go("home");}
-}
+function addTask(e){e.preventDefault();const f=new FormData(e.target);data.tasks.push({id:Date.now(),title:f.get("title"),subject:f.get("subject"),due:f.get("due"),priority:f.get("priority"),minutes:Number(f.get("minutes"))||30,desc:f.get("desc"),done:false});save();toast("Tarea agregada");render()}
+function toggleTask(id){const t=data.tasks.find(x=>x.id===id);if(t)t.done=!t.done;save();render()}
+function delTask(id){data.tasks=data.tasks.filter(x=>x.id!==id);save();render()}
+function makePlan(){let hours=Number(data.planner.maxHours)||2,cap=hours*60,used=0;const pending=[...data.tasks].filter(x=>!x.done).sort((a,b)=>a.due.localeCompare(b.due));for(const t of pending){if(used>=cap)break;used+=Math.min(Number(t.minutes)||25,cap-used)}toast(`Plan organizado: ${used}/${cap} min disponibles`)}
 function schedule(){
- const days=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
- const cells=days.map(d=>`<div class="head">${d}</div>`).join("");
- const times=[...new Set(data.schedule.map(x=>x.time))].sort(); if(!times.length)times.push("08:00","09:00","10:00");
- let body="";for(const t of times){body+=`<div class="head">${t}</div>`+days.map(d=>{const a=data.schedule.find(x=>x.day===d&&x.time===t);return `<div>${a?`<b>${esc(a.course)}</b>`:""} </div>`}).join("")}
+ const days=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"],cells=days.map(d=>`<div class="head">${d}</div>`).join("");
+ const times=[...new Set(data.schedule.map(x=>x.time))].sort();if(!times.length)times.push("08:00","09:00","10:00");
+ let body="";for(const t of times){body+=`<div class="head">${t}</div>`+days.map(d=>{const a=data.schedule.find(x=>x.day===d&&x.time===t);return `<div>${a?`<b>${esc(a.course)}</b>`:""}</div>`}).join("")}
  return `<div class="grid"><div class="card span-4"><h2>Agregar clase</h2><form class="form" onsubmit="addClass(event)">
- <div class="field"><label>Día</label><select name="day">${days.map(d=>`<option>${d}</option>`).join("")}</select></div>
- <div class="field"><label>Hora</label><input type="time" name="time" required></div><div class="field"><label>Curso</label><input name="course" required></div>
- <button class="btn primary">Agregar al horario</button></form></div>
- <div class="card span-8"><h2>Mi horario</h2><div class="schedule" style="margin-top:12px"><div class="head">Hora</div>${cells}${body}</div>
- <div class="list" style="margin-top:12px">${data.schedule.map((x,i)=>`<div class="item row"><span><b>${esc(x.day)}</b> · ${x.time} · ${esc(x.course)}</span><button class="btn danger" onclick="delClass(${i})">Borrar</button></div>`).join("")}</div></div></div>`;
+  <div class="field"><label>Día</label><select name="day">${days.map(d=>`<option>${d}</option>`).join("")}</select></div>
+  <div class="field"><label>Hora</label><input type="time" name="time" required></div><div class="field"><label>Curso</label><input name="course" required></div>
+  <button class="btn primary">Agregar al horario</button></form></div>
+  <div class="card span-8"><h2>Mi horario</h2><div class="schedule" style="margin-top:12px"><div class="head">Hora</div>${cells}${body}</div>
+  <div class="list" style="margin-top:12px">${data.schedule.map((x,i)=>`<div class="item row"><span><b>${esc(x.day)}</b> · ${x.time} · ${esc(x.course)}</span><button class="btn danger" onclick="delClass(${i})">Borrar</button></div>`).join("")}</div></div></div>`;
 }
-function addClass(e){e.preventDefault();const f=new FormData(e.target);data.schedule.push({day:f.get("day"),time:f.get("time"),course:f.get("course")});save();render();}
-function delClass(i){data.schedule.splice(i,1);save();render();}
+function addClass(e){e.preventDefault();const f=new FormData(e.target);data.schedule.push({day:f.get("day"),time:f.get("time"),course:f.get("course")});save();render()}
+function delClass(i){data.schedule.splice(i,1);save();render()}
 function grades(){
  const avg=data.grades.length?(data.grades.reduce((a,b)=>a+Number(b.grade),0)/data.grades.length).toFixed(2):"—";
  return `<div class="grid"><div class="card span-4"><h2>Agregar nota</h2><form class="form" onsubmit="addGrade(event)"><div class="field"><label>Curso</label><input name="subject" required></div><div class="field"><label>Nota (0–20)</label><input type="number" name="grade" min="0" max="20" step="0.1" required></div><button class="btn primary">Guardar nota</button></form></div>
  <div class="card span-8"><h2>Mis notas</h2><p class="muted">Promedio actual: <b>${avg}</b></p><div class="list">${data.grades.map((g,i)=>`<div class="item row"><span>${esc(g.subject)}</span><b>${g.grade}</b><button class="btn danger" onclick="delGrade(${i})">Borrar</button></div>`).join("")||'<div class="empty">Sin notas registradas.</div>'}</div></div></div>`;
 }
-function addGrade(e){e.preventDefault();const f=new FormData(e.target);data.grades.push({id:Date.now(),subject:f.get("subject"),grade:Number(f.get("grade"))});save();toast("Nota guardada");render();}
-function delGrade(i){data.grades.splice(i,1);save();render();}
+function addGrade(e){e.preventDefault();const f=new FormData(e.target);data.grades.push({id:Date.now(),subject:f.get("subject"),grade:Number(f.get("grade"))});save();toast("Nota guardada");render()}
+function delGrade(i){data.grades.splice(i,1);save();render()}
 function calendar(){
- const d=new Date();const y=d.getFullYear(),m=d.getMonth(),first=new Date(y,m,1).getDay()||7,last=new Date(y,m+1,0).getDate();
+ const d=new Date(),y=d.getFullYear(),m=d.getMonth(),first=new Date(y,m,1).getDay()||7,last=new Date(y,m+1,0).getDate();
  let html="";for(let i=1;i<first;i++)html+="<div></div>";
- for(let day=1;day<=last;day++){const ds=`${y}-${String(m+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;const ts=data.tasks.filter(t=>t.due===ds);html+=`<div class="day"><strong>${day}</strong>${ts.map(t=>`<div class="event">${esc(t.title)}</div>`).join("")}</div>`}
- return `<div class="card"><div class="row"><div><h2>${d.toLocaleDateString("es-PE",{month:"long",year:"numeric"})}</h2><div class="muted">Tus fechas de entrega aparecen aquí.</div></div></div><div class="calendar" style="margin-top:15px"><div class="head">L</div><div class="head">M</div><div class="head">X</div><div class="head">J</div><div class="head">V</div><div class="head">S</div><div class="head">D</div>${html}</div></div>`;
+ for(let day=1;day<=last;day++){const ds=`${y}-${String(m+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`,ts=data.tasks.filter(t=>t.due===ds);html+=`<div class="day"><strong>${day}</strong>${ts.map(t=>`<div class="event">${esc(t.title)}</div>`).join("")}</div>`}
+ return `<div class="card"><h2>${d.toLocaleDateString("es-PE",{month:"long",year:"numeric"})}</h2><div class="muted">Tus fechas de entrega aparecen aquí.</div><div class="calendar" style="margin-top:15px"><div class="head">L</div><div class="head">M</div><div class="head">X</div><div class="head">J</div><div class="head">V</div><div class="head">S</div><div class="head">D</div>${html}</div></div>`;
 }
-function announcements(){
- return `<div class="card"><h2>Comunicados</h2><div class="list" style="margin-top:12px">${data.announcements.map((a,i)=>`<div class="item row"><span>${esc(a)}</span><button class="btn danger" onclick="delAnnouncement(${i})">Borrar</button></div>`).join("")}</div>
- <form class="chatbar" style="margin-top:15px" onsubmit="addAnnouncement(event)"><input name="a" placeholder="Nuevo comunicado"><button class="btn primary">Agregar</button></form></div>`;
-}
-function addAnnouncement(e){e.preventDefault();const a=new FormData(e.target).get("a");if(a){data.announcements.unshift(a);save();render();}}
-function delAnnouncement(i){data.announcements.splice(i,1);save();render();}
 function assistant(){
- return `<div class="card chat"><div class="row"><div><h2>Asistente EduNova</h2><div class="muted">Puede ayudarte a ordenar tareas, estudiar y organizar tu tiempo.</div></div><span class="pill" id="chatStatus">Comprobando IA...</span></div>
- <div class="messages" id="messages"><div class="msg ai">Hola, ${esc(data.profile.name)} 👋. Pregúntame qué tarea hacer primero, cómo organizar tu semana o cómo mejorar tu planificación.</div></div>
+ return `<div class="card chat"><div class="section-head"><div><h2>Asistente EduNova</h2><div class="muted">Organiza tus tareas, estudia y consulta tu información.</div></div><span class="pill" id="chatStatus">Comprobando IA...</span></div>
+ <div class="messages" id="messages"><div class="msg ai">Hola, ${esc(data.profile.name)} 👋. ¿En qué te ayudo con tus estudios?</div></div>
  <form class="chatbar" id="chatForm"><input id="chatInput" autocomplete="off" placeholder="Ej. ¿Qué debería hacer primero?"><button class="btn primary">Enviar</button></form></div>`;
 }
 function bindChat(){
  const form=document.getElementById("chatForm"),input=document.getElementById("chatInput"),msgs=document.getElementById("messages"),status=document.getElementById("chatStatus");
  form.onsubmit=async e=>{e.preventDefault();const q=input.value.trim();if(!q)return;append("user",q);input.value="";status.textContent="Pensando...";
- try{
-  const r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:q,context:{profile:data.profile,planner:data.planner,tasks:data.tasks,grades:data.grades,schedule:data.schedule,announcements:data.announcements}})});
-  const j=await r.json(); if(!r.ok)throw new Error(j.error||"Error");
-  append("ai",j.reply||"No recibí una respuesta.");status.textContent=j.mode==="ai"?"IA conectada":"Modo local";
- }catch(err){append("ai",localAI(q));status.textContent="Modo local";} };
- function append(role,text){const el=document.createElement("div");el.className="msg "+role;el.textContent=text;msgs.appendChild(el);msgs.scrollTop=msgs.scrollHeight;}
+ try{const r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:q,context:{profile:data.profile,planner:data.planner,tasks:data.tasks,grades:data.grades,schedule:data.schedule,announcements:data.announcements}})});const j=await r.json();if(!r.ok)throw new Error(j.error||"Error");append("ai",j.reply||"No recibí una respuesta.");status.textContent=j.mode==="ai"?"IA conectada":"Modo local"}catch(err){append("ai",localAI(q));status.textContent="Modo local"}};
+ function append(role,text){const el=document.createElement("div");el.className="msg "+role;el.textContent=text;msgs.appendChild(el);msgs.scrollTop=msgs.scrollHeight}
 }
-function localAI(q){
- const s=q.toLowerCase(),pending=data.tasks.filter(t=>!t.done).sort((a,b)=>a.due.localeCompare(b.due));
- if(s.includes("primero")||s.includes("urgente"))return pending.length?`Yo empezaría por "${pending[0].title}", porque vence el ${pending[0].due}. Después seguiría con las demás por fecha y prioridad.`:"No tienes tareas pendientes.";
- if(s.includes("plan")||s.includes("organiza"))return `Tienes ${pending.length} tareas pendientes y dispones de hasta ${data.planner.maxHours} h al día. Te recomiendo empezar por la fecha de entrega más cercana y dividir las tareas largas en sesiones de ${data.planner.minSession} min.`;
- if(s.includes("nota")||s.includes("promedio")){const a=data.grades.length?data.grades.reduce((x,g)=>x+Number(g.grade),0)/data.grades.length:0;return data.grades.length?`Tu promedio actual es ${a.toFixed(2)} sobre 20.`:"Todavía no tienes notas registradas.";}
- return "Puedo ayudarte a priorizar tareas, crear un plan de estudio, revisar tus fechas y analizar tus notas. Prueba preguntando: “¿Qué hago primero?”";
-}
+function localAI(q){const s=q.toLowerCase(),pending=data.tasks.filter(t=>!t.done).sort((a,b)=>a.due.localeCompare(b.due));if(s.includes("primero")||s.includes("urgente"))return pending.length?`Yo empezaría por "${pending[0].title}", porque vence el ${pending[0].due}.`:"No tienes tareas pendientes.";if(s.includes("plan")||s.includes("organiza"))return `Tienes ${pending.length} tareas pendientes y dispones de hasta ${data.planner.maxHours} h al día.`;if(s.includes("nota")||s.includes("promedio")){const a=data.grades.length?data.grades.reduce((x,g)=>x+Number(g.grade),0)/data.grades.length:0;return data.grades.length?`Tu promedio actual es ${a.toFixed(2)} sobre 20.`:"Todavía no tienes notas registradas."}return "Puedo ayudarte a priorizar tareas, crear un plan de estudio y revisar tus fechas."}
 function settings(){
  return `<div class="grid"><div class="card span-6"><h2>Perfil</h2><form class="form" onsubmit="saveSettings(event)">
  <div class="field"><label>Nombre</label><input name="name" value="${esc(data.profile.name)}"></div><div class="field"><label>Inicial</label><input name="initial" maxlength="2" value="${esc(data.profile.initial)}"></div>
- <h3 style="margin-top:8px">Planificador</h3><div class="form grid2"><div class="field"><label>Horas máximas al día</label><input type="number" min="0.5" max="12" step=".5" name="hours" value="${data.planner.maxHours}"></div><div class="field"><label>Sesión mínima (min)</label><input type="number" min="10" max="120" name="session" value="${data.planner.minSession}"></div></div>
+ <h3 style="margin-top:8px">Planificador</h3><div class="form grid2"><div class="field"><label>Horas máximas al día</label><input type="number" min=".5" max="12" step=".5" name="hours" value="${data.planner.maxHours}"></div><div class="field"><label>Sesión mínima</label><input type="number" min="10" max="120" name="session" value="${data.planner.minSession}"></div></div>
  <button class="btn primary">Guardar</button></form></div>
- <div class="card span-6"><h2>Instalar en el celular</h2><p class="muted">EduNova V3 está preparada como PWA. Cuando esté publicada con HTTPS, usa el menú del navegador y elige “Instalar aplicación” o “Añadir a pantalla de inicio”.</p>
- <button class="btn primary" onclick="installApp()">Instalar EduNova</button><p id="installHelp" class="muted"></p>
- <hr style="border:0;border-top:1px solid var(--line);margin:18px 0"><button class="btn danger" onclick="resetData()">Restablecer datos</button></div></div>`;
+ <div class="card span-6"><h2>Apariencia</h2><p class="muted">Elige entre modo claro y oscuro. La preferencia se guarda en este dispositivo.</p><button class="btn primary" onclick="toggleTheme()">Cambiar tema</button><hr style="border:0;border-top:1px solid var(--line);margin:18px 0"><button class="btn danger" onclick="resetData()">Restablecer datos</button></div></div>`;
 }
-function saveSettings(e){e.preventDefault();const f=new FormData(e.target);data.profile.name=f.get("name")||"Estudiante";data.profile.initial=f.get("initial")||"E";data.planner.maxHours=Number(f.get("hours"))||2;data.planner.minSession=Number(f.get("session"))||25;save();toast("Configuración guardada");render();}
-function resetData(){if(confirm("¿Restablecer todos los datos de EduNova?")){localStorage.removeItem(KEY);location.reload();}}
-let deferredPrompt=null;
-window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;});
-async function installApp(){if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;}else document.getElementById("installHelp").textContent="Si el navegador no muestra el instalador, abre el menú del navegador y busca “Instalar aplicación” o “Añadir a pantalla de inicio”.";}
+function saveSettings(e){e.preventDefault();const f=new FormData(e.target);data.profile.name=f.get("name")||"Estudiante";data.profile.initial=f.get("initial")||"E";data.planner.maxHours=Number(f.get("hours"))||2;data.planner.minSession=Number(f.get("session"))||25;save();toast("Configuración guardada");render()}
+function resetData(){if(confirm("¿Restablecer todos los datos de EduNova?")){localStorage.removeItem(KEY);location.reload()}}
+function toggleTheme(){const root=document.documentElement,next=root.dataset.theme==="dark"?"light":"dark";root.dataset.theme=next;localStorage.setItem(THEME_KEY,next);document.getElementById("themeBtn").textContent=next==="dark"?"🌙":"☀️"}
+(function(){const t=localStorage.getItem(THEME_KEY)||"light";document.documentElement.dataset.theme=t;document.getElementById("themeBtn").textContent=t==="dark"?"🌙":"☀️";nav();render()})();
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));
-nav();render();
 </script>
 </body>
 </html>
