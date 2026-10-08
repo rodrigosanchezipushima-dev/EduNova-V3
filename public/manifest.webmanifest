@@ -1,0 +1,12 @@
+{
+  "name": "EduNova V3",
+  "short_name": "EduNova",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f7fb",
+  "theme_color": "#111827",
+  "description": "Organizador escolar con tareas, horarios, notas, calendario y asistente de IA.",
+  "icons": [
+    {"src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+  ]
+}
