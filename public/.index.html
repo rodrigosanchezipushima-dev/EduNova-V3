@@ -1,0 +1,362 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080d1b">
+  <title>EduNova V5</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #080d1b;
+      color: #edf2ff;
+    }
+
+    .container {
+      width: min(92%, 460px);
+      margin: 70px auto;
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .brand h1 {
+      margin-bottom: 8px;
+      font-size: 36px;
+      color: #8b9cff;
+    }
+
+    .brand p, .muted { color: #9aa8c7; }
+
+    .card {
+      background: #111a2e;
+      border: 1px solid #263454;
+      border-radius: 18px;
+      padding: 25px;
+    }
+
+    h2 { margin-top: 0; }
+
+    label {
+      display: block;
+      margin: 16px 0 7px;
+      color: #cbd5f1;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border-radius: 9px;
+      border: 1px solid #354566;
+      background: #0a1224;
+      color: white;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 14px;
+      padding: 13px;
+      border: 0;
+      border-radius: 9px;
+      background: #6578f5;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: #25324e;
+    }
+
+    button:disabled { opacity: .6; cursor: wait; }
+
+    #message {
+      min-height: 24px;
+      margin-top: 15px;
+      color: #a9baff;
+      overflow-wrap: anywhere;
+    }
+
+    .hidden { display: none !important; }
+
+    .welcome {
+      max-width: 850px;
+      margin: 35px auto;
+      width: 92%;
+    }
+
+    .panel {
+      background: #111a2e;
+      border: 1px solid #263454;
+      border-radius: 14px;
+      padding: 22px;
+      margin-top: 18px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .topbar button {
+      width: auto;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <main id="loginView" class="container">
+    <header class="brand">
+      <h1>EduNova</h1>
+      <p>Tu espacio personal de aprendizaje</p>
+    </header>
+
+    <section class="card">
+      <h2 id="formTitle">Iniciar sesión</h2>
+      <p class="muted">Accede a tu espacio educativo.</p>
+
+      <form id="authForm">
+        <label for="email">Correo electrónico</label>
+        <input id="email" type="email" autocomplete="email"
+          placeholder="tu@correo.com" required>
+
+        <label for="password">Contraseña</label>
+        <input id="password" type="password"
+          autocomplete="current-password"
+          minlength="8" placeholder="Mínimo 8 caracteres" required>
+
+        <button id="submitButton" type="submit">
+          Iniciar sesión
+        </button>
+      </form>
+
+      <button id="toggleMode" class="secondary" type="button">
+        Crear una cuenta nueva
+      </button>
+
+      <button id="resetButton" class="secondary" type="button">
+        Recuperar contraseña
+      </button>
+
+      <p id="message" role="status" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <main id="appView" class="welcome hidden">
+    <header class="topbar">
+      <div>
+        <h1>EduNova <span style="color:#8b9cff">V5</span></h1>
+        <p class="muted">Panel educativo personal</p>
+      </div>
+      <button id="logoutButton" type="button">Cerrar sesión</button>
+    </header>
+
+    <section class="panel">
+      <h2>¡Bienvenido a EduNova!</h2>
+      <p id="userEmail" class="muted"></p>
+      <p>Tu acceso está configurado correctamente.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Tu espacio de estudio</h2>
+      <p class="muted">
+        Estamos preparando tus módulos de cursos, apuntes,
+        tareas, horario y calificaciones.
+      </p>
+      <p>Próximo paso: conectar los módulos con la base de datos.</p>
+    </section>
+  </main>
+
+  <script type="module">
+    import { createClient } from
+      "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    // REEMPLAZA estos dos valores con los de TU proyecto.
+    const SUPABASE_URL = "PEGA_AQUI_LA_URL_DEL_PROYECTO";
+    const SUPABASE_KEY = "PEGA_AQUI_LA_CLAVE_PUBLICA";
+
+    const loginView = document.querySelector("#loginView");
+    const appView = document.querySelector("#appView");
+    const authForm = document.querySelector("#authForm");
+    const message = document.querySelector("#message");
+    const submitButton = document.querySelector("#submitButton");
+    const toggleMode = document.querySelector("#toggleMode");
+
+    let isRegistering = false;
+    let supabase;
+
+    function showMessage(text) {
+      message.textContent = text;
+    }
+
+    function showLogin() {
+      loginView.classList.remove("hidden");
+      appView.classList.add("hidden");
+    }
+
+    function showApp(user) {
+      loginView.classList.add("hidden");
+      appView.classList.remove("hidden");
+      document.querySelector("#userEmail").textContent =
+        "Sesión iniciada como: " + user.email;
+    }
+
+    function getRedirectUrl() {
+      return window.location.href.split("#")[0].split("?")[0];
+    }
+
+    try {
+      if (
+        SUPABASE_URL.startsWith("https://") &&
+        !SUPABASE_URL.includes("PEGA_AQUI") &&
+        SUPABASE_KEY &&
+        !SUPABASE_KEY.includes("PEGA_AQUI")
+      ) {
+        supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+      } else {
+        showMessage("Falta configurar la URL y la clave pública de Supabase.");
+      }
+    } catch (error) {
+      showMessage("No se pudo configurar Supabase. Revisa los datos.");
+    }
+
+    toggleMode.addEventListener("click", () => {
+      isRegistering = !isRegistering;
+
+      document.querySelector("#formTitle").textContent =
+        isRegistering ? "Crear cuenta" : "Iniciar sesión";
+
+      submitButton.textContent =
+        isRegistering ? "Registrarme" : "Iniciar sesión";
+
+      toggleMode.textContent =
+        isRegistering ? "Ya tengo una cuenta" : "Crear una cuenta nueva";
+
+      document.querySelector("#password").autocomplete =
+        isRegistering ? "new-password" : "current-password";
+
+      showMessage("");
+    });
+
+    authForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (!supabase) {
+        showMessage("Configura primero la conexión con Supabase.");
+        return;
+      }
+
+      const email = document.querySelector("#email").value.trim();
+      const password = document.querySelector("#password").value;
+
+      submitButton.disabled = true;
+      showMessage("Procesando...");
+
+      try {
+        if (isRegistering) {
+          const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              emailRedirectTo: getRedirectUrl()
+            }
+          });
+
+          if (error) throw error;
+
+          if (data.session) {
+            showMessage("Cuenta creada correctamente.");
+          } else {
+            showMessage(
+              "Registro enviado. Revisa tu correo para confirmar la cuenta."
+            );
+          }
+        } else {
+          const { error } = await supabase.auth.signInWithPassword({
+            email,
+            password
+          });
+
+          if (error) throw error;
+        }
+      } catch (error) {
+        showMessage("No se pudo completar la operación: " + error.message);
+      } finally {
+        submitButton.disabled = false;
+      }
+    });
+
+    document.querySelector("#resetButton").addEventListener("click",
+      async () => {
+        if (!supabase) {
+          showMessage("Configura primero la conexión con Supabase.");
+          return;
+        }
+
+        const email = document.querySelector("#email").value.trim();
+
+        if (!email) {
+          showMessage("Escribe tu correo electrónico primero.");
+          return;
+        }
+
+        try {
+          const { error } = await supabase.auth.resetPasswordForEmail(
+            email,
+            { redirectTo: getRedirectUrl() }
+          );
+
+          if (error) throw error;
+
+          showMessage(
+            "Si el correo está registrado, recibirás las instrucciones de recuperación."
+          );
+        } catch (error) {
+          showMessage("No se pudo solicitar la recuperación: " + error.message);
+        }
+      }
+    );
+
+    document.querySelector("#logoutButton").addEventListener("click",
+      async () => {
+        const { error } = await supabase.auth.signOut();
+
+        if (error) {
+          alert("No se pudo cerrar la sesión: " + error.message);
+        }
+      }
+    );
+
+    if (supabase) {
+      supabase.auth.onAuthStateChange((_event, session) => {
+        if (session?.user) {
+          showApp(session.user);
+        } else {
+          showLogin();
+        }
+      });
+
+      const { data, error } = await supabase.auth.getSession();
+
+      if (error) {
+        showMessage("No se pudo recuperar la sesión.");
+      } else if (data.session?.user) {
+        showApp(data.session.user);
+      }
+    }
+  </script>
+</body>
+</html>
