@@ -139,40 +139,125 @@ function render(){
  if(current==="assistant")bindChat();
 }
 function home(){
- const pending=data.tasks.filter(x=>!x.done);
- const avg=data.grades.length?(data.grades.reduce((a,b)=>a+Number(b.grade),0)/data.grades.length).toFixed(1):"—";
- const urgent=[...pending].sort((a,b)=>a.due.localeCompare(b.due)).slice(0,3);
+ const pending = data.tasks.filter(t => !t.done);
+ const completed = data.tasks.filter(t => t.done);
+ const total = data.tasks.length;
+ const progress = total ? Math.round(completed.length / total * 100) : 0;
+
+ const avg = data.grades.length
+  ? (data.grades.reduce((a,b) => a + Number(b.grade),0) / data.grades.length).toFixed(1)
+  : "—";
+
+ const today = new Date().toLocaleDateString("en-CA");
+ const urgent = [...pending]
+  .sort((a,b) => a.due.localeCompare(b.due))
+  .slice(0,3);
+
  return `<div class="grid">
+
   <div class="card hero span-12">
-   <div class="eyebrow" style="color:#c7d2fe">Tu espacio de estudio</div>
+   <div class="eyebrow" style="color:#c7d2fe">TU ESPACIO DE ESTUDIO</div>
    <h2>Hola, ${esc(data.profile.name)} 👋</h2>
-   <p>Organiza tus materias, tareas y tiempo de estudio desde un solo lugar.</p>
-   <button class="btn" onclick="go('subjects')">Ver mis materias →</button>
+   <p>Organiza tus materias, completa tus objetivos y avanza cada día.</p>
+   <button class="btn" onclick="go('tasks')">Ver mis tareas →</button>
   </div>
-  <div class="card stat-card span-3"><div class="stat-icon">🔥</div><div><div class="stat-value">0</div><div class="stat-label">Días de racha</div></div></div>
-  <div class="card stat-card span-3"><div class="stat-icon">⭐</div><div><div class="stat-value">0 XP</div><div class="stat-label">Nivel inicial</div></div></div>
-  <div class="card stat-card span-3"><div class="stat-icon">📝</div><div><div class="stat-value">${pending.length}</div><div class="stat-label">Tareas pendientes</div></div></div>
-  <div class="card stat-card span-3"><div class="stat-icon">📈</div><div><div class="stat-value">${avg}</div><div class="stat-label">Promedio actual</div></div></div>
+
+  <div class="card stat-card span-3">
+   <div class="stat-icon">📝</div>
+   <div>
+    <div class="stat-value">${pending.length}</div>
+    <div class="stat-label">Pendientes</div>
+   </div>
+  </div>
+
+  <div class="card stat-card span-3">
+   <div class="stat-icon">✅</div>
+   <div>
+    <div class="stat-value">${completed.length}</div>
+    <div class="stat-label">Completadas</div>
+   </div>
+  </div>
+
+  <div class="card stat-card span-3">
+   <div class="stat-icon">📈</div>
+   <div>
+    <div class="stat-value">${progress}%</div>
+    <div class="stat-label">Progreso general</div>
+   </div>
+  </div>
+
+  <div class="card stat-card span-3">
+   <div class="stat-icon">⭐</div>
+   <div>
+    <div class="stat-value">${avg}</div>
+    <div class="stat-label">Promedio actual</div>
+   </div>
+  </div>
 
   <div class="card span-8">
-   <div class="section-head"><h2>⚡ Acciones rápidas</h2></div>
-   <div class="quick-grid">
-    <button class="quick" onclick="go('tasks')">➕<br>Nueva tarea</button>
-    <button class="quick" onclick="go('subjects')">📖<br>Mis materias</button>
-    <button class="quick" onclick="go('assistant')">🤖<br>Preguntar a IA</button>
-    <button class="quick" onclick="go('calendar')">📅<br>Ver agenda</button>
+   <div class="section-head">
+    <h2>📅 Próximas entregas</h2>
+    <button class="btn ghost" onclick="go('tasks')">Ver todas</button>
+   </div>
+
+   <div class="list">
+    ${urgent.length ? urgent.map(t => {
+      const overdue = t.due && t.due < today;
+      return `<div class="item">
+       <div class="row">
+        <div>
+         <b>${esc(t.title)}</b>
+         <div class="muted" style="margin-top:5px">
+          ${esc(t.subject)} · Entrega: ${esc(t.due)}
+         </div>
+        </div>
+        <span class="pill" style="${overdue ? 'background:#fee2e2;color:#991b1b' : ''}">
+         ${overdue ? 'Vencida' : t.priority === 'alta' ? 'Alta' : t.priority === 'media' ? 'Media' : 'Baja'}
+        </span>
+       </div>
+      </div>`;
+    }).join("") : '<div class="empty">¡Excelente! No tienes tareas pendientes 🎉</div>'}
    </div>
   </div>
 
   <div class="card span-4">
-   <div class="section-head"><h2>📌 Próximo paso</h2></div>
-   ${urgent.length?`<div class="item"><b>${esc(urgent[0].title)}</b><div class="muted" style="margin-top:5px">${esc(urgent[0].subject)} · Entrega ${urgent[0].due}</div><button class="btn primary" style="margin-top:10px" onclick="go('tasks')">Ver tarea</button></div>`:'<div class="empty">No tienes tareas pendientes 🎉</div>'}
+   <div class="section-head"><h2>🎯 Tu progreso</h2></div>
+   <div style="font-size:34px;font-weight:850">${progress}%</div>
+   <div style="height:10px;background:var(--line);border-radius:99px;overflow:hidden;margin:12px 0">
+    <div style="height:100%;width:${progress}%;background:linear-gradient(90deg,#4f46e5,#8b5cf6);border-radius:99px;transition:width .3s"></div>
+   </div>
+   <p class="muted">${completed.length} de ${total} tareas completadas.</p>
+   <button class="btn primary" onclick="go('tasks')">Continuar estudiando</button>
   </div>
 
   <div class="card span-12">
-   <div class="section-head"><h2>📚 Mis materias</h2><button class="btn ghost" onclick="go('subjects')">Ver todas</button></div>
-   <div class="subject-grid">${subjects.map(([n,i])=>`<button class="subject" onclick="subjectInfo('${n}')"><span class="sicon">${i}</span><b>${n}</b><small>Ver espacio</small></button>`).join("")}</div>
+   <div class="section-head">
+    <h2>⚡ Acciones rápidas</h2>
+   </div>
+   <div class="quick-grid">
+    <button class="quick" onclick="go('tasks')">➕<br>Nueva tarea</button>
+    <button class="quick" onclick="go('subjects')">📚<br>Mis materias</button>
+    <button class="quick" onclick="go('assistant')">🤖<br>Asistente IA</button>
+    <button class="quick" onclick="go('calendar')">📅<br>Ver agenda</button>
+   </div>
   </div>
+
+  <div class="card span-12">
+   <div class="section-head">
+    <h2>📚 Mis materias</h2>
+    <button class="btn ghost" onclick="go('subjects')">Ver todas</button>
+   </div>
+   <div class="subject-grid">
+    ${subjects.map(([n,i]) => `
+     <button class="subject" onclick="subjectInfo('${n}')">
+      <span class="sicon">${i}</span>
+      <b>${n}</b>
+      <small>Ver espacio</small>
+     </button>
+    `).join("")}
+   </div>
+  </div>
+
  </div>`;
 }
 function subjects(){
